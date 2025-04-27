@@ -36,4 +36,15 @@ const black = {
   800: "#000000",
 };
 
-export { black };
+const white = {
+  100: "#80868B",
+  200: "#9AA0A6",
+  300: "#BDC1C6",
+  400: "#DADCE0",
+  500: "#E8EAED",
+  600: "#F1F3F4",
+  700: "#F8F9FA",
+  800: "#FFFFFF",
+};
+
+export { black, white };

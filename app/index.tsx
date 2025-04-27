@@ -14,7 +14,14 @@ export default function loader() {
 
   async function handleWallets() {
     const wallets = await AsyncStorage.getItem("wallets");
-    
+    if (!wallets) {
+      router.replace("/create");
+    } else {
+      setWallets(JSON.parse(wallets));
+      setCurrentWallet(JSON.parse(wallets)[0]);
+      await handleTokens();
+      router.replace("/(tabs)/");
+    }
   }
 
   React.useEffect(() => {
@@ -28,7 +35,7 @@ export default function loader() {
       }}
     >
       <Image
-        source={require("../assets/images/splash-icon.png")}
+        source={require("../assets/images/splashscreen.png")}
         style={{
           width: "100%",
           height: "100%",
