@@ -16,15 +16,21 @@ import { black, white } from "@/constants/Colors";
 import bs58 from "bs58";
 import useWalletStore from "@/store/wallet";
 import { useRouter } from "expo-router";
+import { Account, Ed25519PrivateKey, PrivateKey, PrivateKeyVariants } from "@aptos-labs/ts-sdk";
+import aptosClient from "@/utils/aptosClient";
+import { getStringAsync } from "expo-clipboard";
 
 export default function ImportPrivateKeyScreen() {
   const { setWallets, setCurrentWallet } = useWalletStore();
+  const [privateKeyInput, setPrivateKeyInput] = React.useState<string>("");
   const router = useRouter();
 
   async function handleWallet() {
     try {
       const privateKeyBytes = bs58.decode(privateKeyInput);
-      const account = Account.fromPrivateKey({ privateKey: privateKeyBytes });
+      const account = await aptosClient.deriveAccountFromPrivateKey({
+        privateKey: new Ed25519PrivateKey(PrivateKey.formatPrivateKey(privateKeyBytes, PrivateKeyVariants.Ed25519)),
+      });
       const address = account.accountAddress.toString();
       const wallets = [
         {
@@ -41,6 +47,10 @@ export default function ImportPrivateKeyScreen() {
       console.log(error);
       // Add error handling, e.g., show an alert to the user
     }
+  }
+  async function handlePaste() {
+    const text = await await getStringAsync();
+    setPrivateKeyInput(text);
   }
 
   return (
@@ -95,7 +105,7 @@ export default function ImportPrivateKeyScreen() {
             justifyContent: "center",
           }}
         >
-          <TouchableOpacity style={styles.pasteButton}>
+          <TouchableOpacity style={styles.pasteButton} onPress={handlePaste}>
             <Ionicons name="copy-outline" size={18} color="black" />
             <Heading style={styles.pasteButtonText}>
               Paste from Clipboard

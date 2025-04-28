@@ -6,7 +6,7 @@ import { black, white } from "@/constants/Colors";
 import useWalletStore from "@/store/wallet";
 import * as Bip39 from "bip39";
 import bs58 from "bs58";
-import { Account, Ed25519PrivateKey, PrivateKey, PrivateKeyVariants } from "@aptos-labs/ts-sdk";
+import { Account, Ed25519Account, Ed25519PrivateKey, PrivateKey, PrivateKeyVariants } from "@aptos-labs/ts-sdk";
 import { derivePath } from "ed25519-hd-key";
 
 import { Image } from "expo-image";
@@ -14,6 +14,7 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { View, useWindowDimensions } from "react-native";
 import aptosClient from "@/utils/aptosClient";
+import { CloudCog } from "lucide-react-native";
 
 export default function Create() {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
@@ -32,6 +33,8 @@ export default function Create() {
       const account = await aptosClient.deriveAccountFromPrivateKey({
         privateKey: new Ed25519PrivateKey(PrivateKey.formatPrivateKey(privateKey, PrivateKeyVariants.Ed25519)),
       });
+      console.log(account, "account");
+
       const address = account.accountAddress.toString();
       const wallets = [
         {
@@ -41,6 +44,7 @@ export default function Create() {
           secretKey: bs58.encode(privateKey),
         },
       ];
+      console.log(wallets, "wallets");
       setWallets(wallets);
       setCurrentWallet(wallets[0]);
       router.push("/backup");
@@ -58,7 +62,7 @@ export default function Create() {
   return (
     <Container>
       <Image
-        source={require("../src/assets/images/onboarding.png")}
+        source={require("../assets/images/splashscreen.png")}
         style={{
           height: height / 2.5,
           width: width / 1.2,
@@ -91,11 +95,11 @@ export default function Create() {
               style={{
                 fontSize: width / 10,
                 fontWeight: "600",
-                color: black[700],
+                color: white[700],
                 textAlign: "center",
               }}
             >
-              Shuffling assets Over Shuffles
+              AgentW for Aptos
             </Heading>
             <Paragraph
               style={{
@@ -106,7 +110,7 @@ export default function Create() {
                 marginTop: 8,
               }}
             >
-              Your Passport to Seamless Cross-Chain Trading on Mobile
+              Customizable Agents for all your needs
             </Paragraph>
           </View>
           <View
@@ -148,7 +152,7 @@ export default function Create() {
               marginTop: 8,
             }}
           >
-            by using Shuffles, you agree to accept our{" "}
+            by using AgentW, you agree to accept our{" "}
             <Paragraph
               style={{
                 fontWeight: "600",
