@@ -48,7 +48,7 @@ export default function Backup() {
 
   async function createWallet() {
     await AsyncStorage.setItem("wallets", JSON.stringify(wallets));
-    router.replace("/(tabs)/");
+    router.replace("/");
   }
 
   return (

@@ -1,3 +1,6 @@
+// Import polyfill first
+import '../polyfill';
+
 import { Aptos, AptosConfig, Network } from '@aptos-labs/ts-sdk';
 
 const aptosConfig = new AptosConfig({

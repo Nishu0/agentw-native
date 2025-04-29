@@ -20,7 +20,7 @@ export interface IToken {
   
   export type Wallet = {
     name: string;
-    seed: string | null;
     publicKey: string;
     secretKey: string;
+    seed?: string;
   }
