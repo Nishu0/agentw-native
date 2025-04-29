@@ -4,39 +4,67 @@ import { black } from "@/constants/Colors";
 import { IToken } from "@/types/wallet";
 import { Image } from "expo-image";
 import React from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Text } from "react-native";
 
-export default function TokenCard({ token }: { token: IToken }) {
+// Default dark theme colors if none provided
+const defaultDarkTheme = {
+  text: "#FFFFFF",
+  secondaryText: "#9CA3AF",
+  background: "#000000",
+  cardBackground: "#1E1E1E",
+  border: "#333333",
+};
+
+export default function TokenCard({ 
+  token, 
+  darkTheme = defaultDarkTheme 
+}: { 
+  token: IToken;
+  darkTheme?: any;
+}) {
+  // Format token price with commas and fixed decimal places
+  const formattedPrice = parseFloat(token.price).toLocaleString('en-US', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+  
+  // Format token balance to show appropriate decimal places based on value
+  const formattedBalance = parseFloat(token.balance) < 0.001 
+    ? parseFloat(token.balance).toExponential(2) 
+    : parseFloat(token.balance).toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 6
+      });
+
   return (
-    <View style={styles.card}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        <Image source={{ uri: token.image }} style={styles.assetImage} />
-        <View
-          style={{
-            maxWidth: 200,
-          }}
-        >
-          <Heading numberOfLines={1} style={styles.assetName}>
-            {token.name}
-          </Heading>
-          <Paragraph
-            style={{
-              fontSize: 12,
-              fontWeight: "600",
-              color: black[200],
-            }}
+    <View style={[styles.card, { borderBottomColor: darkTheme.border }]}>
+      <View style={styles.leftContent}>
+        <Image 
+          source={{ uri: token.image }} 
+          style={styles.assetImage} 
+          contentFit="cover"
+          transition={200}
+        />
+        <View style={styles.tokenInfo}>
+          <Text 
+            numberOfLines={1} 
+            style={[styles.assetName, { color: darkTheme.text }]}
           >
-            {token.balance} {token.symbol}
-          </Paragraph>
+            {token.name}
+          </Text>
+          <Text
+            style={[styles.tokenSymbol, { color: darkTheme.secondaryText }]}
+          >
+            {formattedBalance} {token.symbol}
+          </Text>
         </View>
       </View>
-      <Heading style={styles.assetName}>${token.price}</Heading>
+      
+      <View style={styles.priceContainer}>
+        <Text style={[styles.priceText, { color: darkTheme.text }]}>
+          ${formattedPrice}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -46,15 +74,39 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    alignItems: "flex-start",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    paddingHorizontal: 4,
+  },
+  leftContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
   },
   assetImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#2A2A2A", // placeholder color while loading
+  },
+  tokenInfo: {
+    maxWidth: 200,
   },
   assetName: {
-    fontSize: 18,
+    fontSize: 16,
+    fontWeight: "700",
+    marginBottom: 2,
+  },
+  tokenSymbol: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  priceContainer: {
+    alignItems: "flex-end",
+  },
+  priceText: {
+    fontSize: 16,
     fontWeight: "700",
   },
 });
